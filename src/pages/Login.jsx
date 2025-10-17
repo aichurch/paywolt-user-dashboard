@@ -70,7 +70,7 @@ export default function Login() {
   // Check server status
   const checkServerStatus = async () => {
     try {
-      const response = await api.get('/api/health');
+      const response = await api.get('/health');
       if (response.data?.status === 'operational') {
         setServerStatus('online');
       } else {
