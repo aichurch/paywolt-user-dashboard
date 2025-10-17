@@ -3,7 +3,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authAPI, userAPI } from '../services/api';
+import api, { authAPI, userAPI } from '../services/api';
 
 const AuthContext = createContext();
 
