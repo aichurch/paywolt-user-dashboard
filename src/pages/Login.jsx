@@ -140,13 +140,13 @@ export default function Login() {
       // Generate session ID
       sessionId.current = `login_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       
-      // Track login attempt
-      await api.post('/api/analytics/login-attempt', {
-        email,
-        device_fingerprint: deviceFingerprint,
-        session_id: sessionId.current,
-        timestamp: new Date().toISOString()
-      }).catch(console.error);
+      // TEMPORARILY DISABLED - Analytics endpoints not ready
+      // await api.post('/api/analytics/login-attempt', {
+      //   email,
+      //   device_fingerprint: deviceFingerprint,
+      //   session_id: sessionId.current,
+      //   timestamp: new Date().toISOString()
+      // }).catch(console.error);
       
       // Attempt login
       const result = await login(email, password, {
@@ -174,11 +174,11 @@ export default function Login() {
         setLoginAttempts(0);
         localStorage.removeItem('paywolt_login_attempts');
         
-        // Track successful login
-        await api.post('/api/analytics/login-success', {
-          user_id: result.user?.id,
-          session_id: sessionId.current
-        }).catch(console.error);
+        // TEMPORARILY DISABLED - Analytics endpoints not ready
+        // await api.post('/api/analytics/login-success', {
+        //   user_id: result.user?.id,
+        //   session_id: sessionId.current
+        // }).catch(console.error);
         
         // Store remember me token if selected
         if (rememberMe && result.rememberToken) {
@@ -207,13 +207,13 @@ export default function Login() {
           setError(result.error || 'Invalid email or password');
         }
         
-        // Track failed login
-        await api.post('/api/analytics/login-failed', {
-          email,
-          reason: result.error,
-          attempts: attempts,
-          session_id: sessionId.current
-        }).catch(console.error);
+        // TEMPORARILY DISABLED - Analytics endpoints not ready
+        // await api.post('/api/analytics/login-failed', {
+        //   email,
+        //   reason: result.error,
+        //   attempts: attempts,
+        //   session_id: sessionId.current
+        // }).catch(console.error);
       }
     } catch (err) {
       console.error('Login error:', err);
