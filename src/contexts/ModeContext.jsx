@@ -178,33 +178,40 @@ export const ModeProvider = ({ children }) => {
   // Fetch user tier and features from backend
   useEffect(() => {
     const fetchUserConfiguration = async () => {
-      try {
-        setIsLoading(true);
-        const [tierResponse, featuresResponse, limitsResponse] = await Promise.all([
-          api.get('/api/user/tier'),
-          api.get('/api/user/features'),
-          api.get('/api/user/limits')
-        ]);
+  // Don't fetch if no token (user not logged in)
+  const token = localStorage.getItem('token');
+  if (!token) {
+    setIsLoading(false);
+    return;
+  }
 
-        setUserTier(tierResponse.data.tier || 'basic');
-        setFeatures(featuresResponse.data.features || {});
-        setLimits(limitsResponse.data.limits || {});
-        
-        // Store in localStorage for offline access
-        localStorage.setItem('paywolt_tier', tierResponse.data.tier);
-        localStorage.setItem('paywolt_features', JSON.stringify(featuresResponse.data.features));
-        localStorage.setItem('paywolt_limits', JSON.stringify(limitsResponse.data.limits));
-      } catch (error) {
-        console.error('Error fetching user configuration:', error);
-        // Load from localStorage as fallback
-        const cachedFeatures = localStorage.getItem('paywolt_features');
-        const cachedLimits = localStorage.getItem('paywolt_limits');
-        if (cachedFeatures) setFeatures(JSON.parse(cachedFeatures));
-        if (cachedLimits) setLimits(JSON.parse(cachedLimits));
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  try {
+    setIsLoading(true);
+    const [tierResponse, featuresResponse, limitsResponse] = await Promise.all([
+      api.get('/api/user/tier'),
+      api.get('/api/user/features'),
+      api.get('/api/user/limits')
+    ]);
+
+    setUserTier(tierResponse.data.tier || 'basic');
+    setFeatures(featuresResponse.data.features || {});
+    setLimits(limitsResponse.data.limits || {});
+    
+    // Store in localStorage for offline access
+    localStorage.setItem('paywolt_tier', tierResponse.data.tier);
+    localStorage.setItem('paywolt_features', JSON.stringify(featuresResponse.data.features));
+    localStorage.setItem('paywolt_limits', JSON.stringify(limitsResponse.data.limits));
+  } catch (error) {
+    console.error('Error fetching user configuration:', error);
+    // Load from localStorage as fallback
+    const cachedFeatures = localStorage.getItem('paywolt_features');
+    const cachedLimits = localStorage.getItem('paywolt_limits');
+    if (cachedFeatures) setFeatures(JSON.parse(cachedFeatures));
+    if (cachedLimits) setLimits(JSON.parse(cachedLimits));
+  } finally {
+    setIsLoading(false);
+  }
+};
 
     fetchUserConfiguration();
 
